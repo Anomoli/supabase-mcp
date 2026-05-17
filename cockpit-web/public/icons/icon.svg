@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">NovaCore Cockpit icon</title>
+  <desc id="desc">A blue cockpit tile with a dark core on a midnight background.</desc>
+  <rect width="512" height="512" rx="112" fill="#0b1220" />
+  <rect x="72" y="72" width="368" height="368" rx="96" fill="#2374ff" />
+  <rect x="166" y="166" width="180" height="180" rx="44" fill="#0b1220" />
+  <circle cx="256" cy="256" r="46" fill="#93c5fd" />
+  <path d="M256 118v64M256 330v64M118 256h64M330 256h64" stroke="#bfdbfe" stroke-width="24" stroke-linecap="round" />
+</svg>
