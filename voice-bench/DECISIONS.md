@@ -161,3 +161,34 @@ overrideable path `%USERPROFILE%\.novacore\secrets\vp2-livekit.env`, never
 inside this repository—even gitignored repo files are one accidental commit
 from immortal history. Launchers read the external file; repository code and
 docs contain no credential values.
+
+## D-010 · 2026-08-21 · SIP uses a separate shared-Redis replacement topology
+
+**Context.** The browser/mobile Gate 1 passed, but the intended PSTN route is
+Twilio SIP → Gammy LiveKit → Moonshine/qwen/Kokoro → `voice_log_turn`. The
+existing resident LiveKit service has no Redis. Official LiveKit SIP requires
+the SIP bridge and LiveKit server to share Redis, and remote SIP peers require
+public SIP/RTP reachability. A legacy Norbert/OpenClaw/XAI call is explicitly
+not evidence for this route.
+
+**Call.** Preserve the known-good `docker-compose.yml` service and add a
+separate `docker-compose.sip.yml` replacement topology containing Redis,
+LiveKit, and LiveKit SIP. Pin `livekit/sip:v1.11.0` and `redis:7.4-alpine` by OCI
+index digest. Keep API credentials external and pass them only as environment
+variables. Keep `use_external_ip: false` until an actual public/NAT SIP and RTP
+route is reviewed; Tailscale Serve is not a public UDP relay. On Windows Docker
+Desktop, publish a bounded initial RTP range instead of assuming Linux host
+networking semantics.
+
+**Activation boundary.** Scaffold validation may inspect manifests and render
+Compose but may not start Redis/SIP or replace the resident LiveKit container.
+Activation requires governed Twilio trunk custody and a narrow relight window.
+The first charged test remains limited to a Chris-owned number and must prove
+route identity, call termination, sovereign model components, audible media,
+and paired capture readback before PSTN is labeled PASS.
+
+**Reachability preflight.** A read-only UPnP discovery found Gammy's Internet
+Gateway Device, and the gateway-reported WAN IPv4 matched an independent public
+IPv4 lookup. No port mapping was created. This means the next reviewed plan can
+use a narrow router mapping instead of assuming CGNAT or introducing a cloud
+media relay, but mapping SIP/RTP remains an activation-time network mutation.

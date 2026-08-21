@@ -1,0 +1,57 @@
+name: vp2-livekit-sip
+
+# Replacement topology for the SIP activation window. This file is intentionally
+# separate from docker-compose.yml so validation cannot mutate the resident
+# browser Gate-1 stack. Do not run `up` without the approved relight window.
+services:
+  redis:
+    image: redis:7.4-alpine@sha256:ff02b58f971e7d7d156a1267e283fcbbeee91773b6aa36c49dac28ecfe28eadf
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+    volumes:
+      - vp2_sip_redis:/data
+
+  livekit:
+    image: livekit/livekit-server:v1.9
+    command: --config /etc/livekit.yaml --node-ip ${LIVEKIT_NODE_IP}
+    restart: unless-stopped
+    environment:
+      LIVEKIT_KEYS: "${LIVEKIT_API_KEY}: ${LIVEKIT_API_SECRET}"
+    depends_on:
+      redis:
+        condition: service_healthy
+    ports:
+      - "7880:7880"
+      - "7881:7881"
+      - "50000-50060:50000-50060/udp"
+    volumes:
+      - ./livekit.sip.yaml:/etc/livekit.yaml:ro
+
+  sip:
+    image: livekit/sip:v1.11.0@sha256:eac7a15dbf8173b04ce1a59ed95f4b07da9db4ff796ab1fb86e92a499d3ee8d8
+    restart: unless-stopped
+    environment:
+      LIVEKIT_API_KEY: "${LIVEKIT_API_KEY}"
+      LIVEKIT_API_SECRET: "${LIVEKIT_API_SECRET}"
+      LIVEKIT_WS_URL: ws://livekit:7880
+    depends_on:
+      redis:
+        condition: service_healthy
+      livekit:
+        condition: service_started
+    ports:
+      - "5060:5060/udp"
+      - "5060:5060/tcp"
+      - "10000-10020:10000-10020/udp"
+      - "127.0.0.1:8080:8080"
+    volumes:
+      # v1.11.0's image entrypoint explicitly reads /sip/config.yaml.
+      - ./sip.yaml:/sip/config.yaml:ro
+
+volumes:
+  vp2_sip_redis:

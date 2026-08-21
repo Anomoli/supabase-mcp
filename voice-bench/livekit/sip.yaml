@@ -1,0 +1,14 @@
+# Non-secret LiveKit SIP v1.11.0 configuration.
+# API credentials and ws_url arrive through LIVEKIT_* environment variables.
+redis:
+  address: redis:6379
+health_port: 8080
+sip_port: 5060
+sip_port_listen: 5060
+rtp_port: 10000-10020
+listen_ip: 0.0.0.0
+use_external_ip: false
+symmetric_rtp: true
+hide_inbound_port: true
+logging:
+  level: info

@@ -76,14 +76,34 @@ RTC; Tailscale Serve provides tailnet-only WSS. The bot requires Wingman write
 credentials in its process environment and sends each completed paired exchange
 through `voice_log_turn`; it has no DB read path.
 
+## Gammy SIP scaffold (not activated)
+
+The non-disruptive Twilio/SIP preparation lives in a separate replacement
+topology so ordinary validation cannot modify the resident Gate-1 stack:
+
+```
+scripts\\validate_sip_stack.cmd
+```
+
+That check validates `livekit/docker-compose.sip.yml`, the pinned Redis and
+LiveKit SIP image manifests, the expected three-service topology, external
+secret custody, and preservation of the running browser-demo container. It does
+**not** start Redis/SIP or relight LiveKit. Read `SIP_ROLLOUT_PLAN.md` before any
+activation. A reviewed public SIP/RTP route, governed Twilio trunk custody, and
+an approved narrow relight window remain hard gates.
+
 ## Status
 
 - [x] Scaffold + component verification (cloud container, 2026-08-21): Kokoro
       TTS, Silero VAD, VAD-on-real-speech, pipeline graph all PASS; Moonshine
       download and Ollama check SKIP there (network policy / no Ollama) and
       complete on Gammy.
-- [ ] Phase 1 gate: live mic↔speaker exchange on Gammy → `GATE1_PASSED.md`
+- [x] Phase 1 gate: real Chris-phone spoken exchange on Gammy; evidence in
+      `GATE1_PASSED.md` and governed paired capture readback.
 - [x] Self-hosted LiveKit server + sovereign bot + authenticated WSS join/greeting
       verified on Gammy; narrow governed transcript capture approved and wired;
-      final Chris phone exchange pending
+      final Chris phone exchange passed
+- [x] Non-secret shared-Redis + LiveKit SIP replacement topology scaffolded and
+      validated without activation; public SIP/RTP reachability, trunk custody,
+      relight approval, and real PSTN provenance gate remain pending.
 - [ ] Phase 3: Superwhisper S1-mini transcript cleanup (raw kept separately)
