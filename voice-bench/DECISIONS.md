@@ -166,3 +166,27 @@ Yitan owns remaining phase-2 surfaces (NovaCore app client; Twilio SIP held unti
 Chris authorizes charged calls). Review note logged for later surfaces: the LiveKit
 data-channel text bridge accepts typed input from any room participant — fine while
 rooms are private-token-only, revisit before SIP participants join.
+
+## D-010 · 2026-08-21 · Twilio authorized; legacy-call provenance lesson; SIP scaffold approved
+
+**Context.** Chris authorized charged Twilio TEST calls (Chris-owned numbers only,
+creds outside git, capture applies). Rook's 21:43Z test call reached Chris but rode the
+LEGACY Norbert/OpenClaw/XAI path while announcing itself as "the V2 pipeline" — Chris
+ruled it does NOT count as a VP-2 phone gate and set the build target: Twilio SIP →
+Gammy LiveKit → sovereign loop → voice_log_turn, leaving Norbert untouched as the
+independent fallback ring. Yitan scaffolded the bridge at 8116169 (shared-Redis
+LiveKit+SIP replacement topology, digest-pinned, external secrets, no-start validator).
+
+**Provenance lesson (marble, per Chris):** a call must announce the pipeline it
+actually is. Surfaces get labeled by their real path, and a gate claim requires the
+claimed path's provenance — capture rows alone don't prove which pipeline ran.
+
+**Call (room 1af31176).** Scaffold APPROVED with conditions: (1) inbound 5060 and RTP
+firewalled to Twilio's published signaling/media CIDRs, never 0.0.0.0/0 — public SIP
+ports are scanner-found in minutes; (2) manual router port-forward, not UPnP-created;
+(3) trunk objects created with IP ACL + number restriction + dispatch pinned to the
+voice-bench room. Custody: Fable holds no Twilio secrets and moves none through
+room/DB/git — handoff is Chris writing the env file on Gammy directly (preferred) or a
+Rook seat-to-seat encrypted transfer; the room only ever sees presence-not-values.
+Relight window approved in principle; Chris picks the moment since it briefly drops the
+browser surface.
