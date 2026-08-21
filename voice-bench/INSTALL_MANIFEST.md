@@ -72,10 +72,12 @@ No cloud API keys anywhere; the only network use is one-time model downloads.
 - Updated `.venv/` installed size: 548,232,000 bytes.
 - Pulled `livekit/livekit-server:v1.9`; runtime reports 1.9.12; image size
   34,496,584 bytes; image digest ID starts `2c13cbf2edcb`.
-- Generated API key/secret into gitignored `livekit/.env`; secret material was
+- Generated API key/secret, then moved it outside the repository to
+  `%USERPROFILE%\.novacore\secrets\vp2-livekit.env`; secret material was
   not printed, committed, posted to Wingman, or placed in this manifest.
 - Tailscale Serve exposes HTTPS/WSS only inside Chris's tailnet at port 7880;
   no public Funnel was enabled.
 - LiveKit RTC advertises Gammy's Tailscale IP with TCP 7881 and UDP 50000–50060.
-- No DB/watchtower capture wiring yet; explicit capture-exception approval is
-  still required by Rook's latest boundary review.
+- Chris approved the narrow capture exception in room row `a08883e9`; the bot
+  now writes paired final transcripts through the existing `voice_log_turn`
+  RPC only. It performs no DB reads, queue/config reads, or other table writes.

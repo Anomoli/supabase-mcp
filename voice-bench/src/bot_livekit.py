@@ -9,8 +9,9 @@ spoken exchange with Chris from one of his surfaces.
 
 Run:  python src/bot_livekit.py         (from the voice-bench/ directory)
 Env:  LIVEKIT_URL        default ws://localhost:7880   (bot runs next to the server)
-      LIVEKIT_API_KEY    required; loaded from gitignored livekit/.env by launcher
-      LIVEKIT_API_SECRET required; loaded from gitignored livekit/.env by launcher
+      LIVEKIT_API_KEY    required; loaded from external secret file by launcher
+      LIVEKIT_API_SECRET required; loaded from external secret file by launcher
+      NOVACORE_SUPABASE_URL / NOVACORE_SUPABASE_KEY required for write-only capture
       LIVEKIT_ROOM       default voice-bench
       plus the same OLLAMA_* / MOONSHINE_MODEL / KOKORO_VOICE as bot.py
 
@@ -30,7 +31,6 @@ import asyncio
 from livekit import api
 from loguru import logger
 from pipecat.audio.vad.silero import SileroVADAnalyzer
-from pipecat.frames.frames import TTSSpeakFrame
 from pipecat.pipeline.pipeline import Pipeline
 from pipecat.pipeline.runner import PipelineRunner
 from pipecat.pipeline.worker import PipelineParams, PipelineWorker
@@ -41,6 +41,8 @@ from pipecat.services.moonshine.stt import MoonshineSTTService
 from pipecat.services.ollama.llm import OLLamaLLMService
 from pipecat.transcriptions.language import Language
 from pipecat.transports.livekit.transport import LiveKitParams, LiveKitTransport
+
+from voice_capture import AssistantTurnCapture, UserTurnCapture, VoiceTurnWriter
 
 LIVEKIT_URL = os.getenv("LIVEKIT_URL", "ws://localhost:7880")
 LIVEKIT_API_KEY = os.environ["LIVEKIT_API_KEY"]
@@ -97,13 +99,16 @@ async def main():
     aggregators = LLMContextAggregatorPair(
         LLMContext(messages=[{"role": "system", "content": SYSTEM_PROMPT}])
     )
+    capture = VoiceTurnWriter.from_environment(surface="livekit", room=LIVEKIT_ROOM)
 
     pipeline = Pipeline(
         [
             transport.input(),
             stt,
+            UserTurnCapture(capture),
             aggregators.user(),
             llm,
+            AssistantTurnCapture(capture),
             tts,
             transport.output(),
             aggregators.assistant(),
@@ -121,8 +126,7 @@ async def main():
 
     @transport.event_handler("on_first_participant_joined")
     async def on_first_participant_joined(transport, participant_id):
-        logger.info(f"Participant joined: {participant_id} — greeting")
-        await worker.queue_frame(TTSSpeakFrame("Voice bench online. Go ahead."))
+        logger.info(f"Participant joined: {participant_id} — ready for captured exchange")
 
     logger.info(f"LiveKit: room '{LIVEKIT_ROOM}' @ {LIVEKIT_URL}")
     logger.info(f"LLM: {OLLAMA_MODEL} @ {OLLAMA_BASE_URL}")

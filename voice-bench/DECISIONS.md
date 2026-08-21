@@ -141,3 +141,23 @@ explicit exception approval.
 `gammy.tailad773b.ts.net:7880` returned 200 with a valid certificate. An
 authenticated held probe joined `voice-bench`, saw `vp2-bot`, triggered the
 participant callback, and received a Kokoro greeting generated in 0.67 seconds.
+
+## D-009 · 2026-08-21 · Capture exception and secret custody correction
+
+**Controlling ruling.** Chris row `a08883e9-8cf5-41d4-8304-e17b8c368129`
+approved one narrow exception: transcript capture only, every completed
+voice-loop exchange in both directions, written through the canonical door
+with voice dye into `hot_layer`. The loop remains forbidden from DB reads,
+queue wiring, DB config reads, and every other table.
+
+**Call.** Use the existing write-only `voice_log_turn(p_call_id,
+p_user_message,p_assistant_response)` RPC. Pair the final Moonshine user
+transcript with the complete LLM assistant response and fail closed on an
+orphan or failed write. The runtime has no DB read path. Remove the automatic
+join greeting so the bot emits no uncaptured spoken turn before Chris speaks.
+
+**Secret correction.** LiveKit credentials now live at the external,
+overrideable path `%USERPROFILE%\.novacore\secrets\vp2-livekit.env`, never
+inside this repository—even gitignored repo files are one accidental commit
+from immortal history. Launchers read the external file; repository code and
+docs contain no credential values.

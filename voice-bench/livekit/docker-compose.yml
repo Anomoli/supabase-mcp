@@ -1,5 +1,5 @@
 # Self-hosted LiveKit for VP-2 phase 2. On Gammy (Windows): Docker Desktop,
-# then from voice-bench/livekit/:  docker compose up -d
+# then from voice-bench/livekit/: docker compose --env-file %USERPROFILE%/.novacore/secrets/vp2-livekit.env up -d
 # The bot (src/bot_livekit.py) runs natively on the host and connects to
 # ws://localhost:7880; phone clients on the LAN use ws://<gammy-lan-ip>:7880.
 services:

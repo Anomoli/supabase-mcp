@@ -64,15 +64,17 @@ for the physical mic/speaker gate.
 
 ```
 python scripts/configure_livekit.py
-cd livekit && docker compose up -d && cd ..
+cd livekit && docker compose --env-file "%USERPROFILE%\.novacore\secrets\vp2-livekit.env" up -d && cd ..
 scripts/run_livekit_bot.cmd
 scripts/mint_livekit_token.cmd chris
 ```
 
-Credentials live only in gitignored `livekit/.env`. The configuration advertises
-Gammy's Tailscale IP for RTC; Tailscale Serve provides tailnet-only WSS. A final
-gate call must not begin until the watchtower/hot-layer capture boundary is
-explicitly released.
+Credentials live outside the repository at
+`%USERPROFILE%\.novacore\secrets\vp2-livekit.env` (override with
+`VP2_LIVEKIT_ENV_FILE`). The configuration advertises Gammy's Tailscale IP for
+RTC; Tailscale Serve provides tailnet-only WSS. The bot requires Wingman write
+credentials in its process environment and sends each completed paired exchange
+through `voice_log_turn`; it has no DB read path.
 
 ## Status
 
@@ -82,5 +84,6 @@ explicitly released.
       complete on Gammy.
 - [ ] Phase 1 gate: live mic↔speaker exchange on Gammy → `GATE1_PASSED.md`
 - [x] Self-hosted LiveKit server + sovereign bot + authenticated WSS join/greeting
-      verified on Gammy; final Chris phone exchange pending capture approval
+      verified on Gammy; narrow governed transcript capture approved and wired;
+      final Chris phone exchange pending
 - [ ] Phase 3: Superwhisper S1-mini transcript cleanup (raw kept separately)
