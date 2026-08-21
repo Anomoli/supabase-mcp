@@ -117,6 +117,11 @@ async def main():
 
     worker = PipelineWorker(
         pipeline,
+        # This is a call surface, not a one-shot job. Keep it resident while
+        # waiting for Chris rather than cancelling after Pipecat's 300s default.
+        idle_timeout_secs=None,
+        cancel_on_idle_timeout=False,
+        cancel_runner_on_idle_timeout=False,
         params=PipelineParams(
             audio_in_sample_rate=16000,
             audio_out_sample_rate=24000,
