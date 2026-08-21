@@ -1,0 +1,8 @@
+.venv/
+.uv-cache/
+.pip-cache/
+.cache/
+models/
+out/
+__pycache__/
+*.pyc
