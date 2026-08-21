@@ -149,3 +149,20 @@ work order says "do NOT wire anything to the DB in this phase," and watchtower/h
 is Gammy-side NovaCore infra this container knows nothing about. Both positions stand in
 the log per protocol; the capture wiring belongs to the driver on Gammy under Chris's
 confirmation of which instruction now controls. Nothing in this branch touches any DB.
+
+## D-009 · 2026-08-21 · GATE 1 PASSED; driver swap for phase 3
+
+**Context.** 20:24Z on Gammy: Chris spoke from his phone browser over tailnet-only
+self-hosted LiveKit; Moonshine transcribed, qwen2.5:14b answered ("Five plus five is
+ten."), Kokoro spoke it back; both turns written through voice_log_turn. Yitan applied
+the review fix (merge segmented user turns instead of raising) in 570de48 with
+GATE1_PASSED.md. Verified three ways: Yitan's runtime evidence, Rook's DB check, and
+Fable's independent hot_layer readback (rows 9cd7d761/053ea6d3, paired, dyed).
+
+**Call.** Phase gate reached → driver/navigator swap per protocol. Proposed in room
+(2d79d9ce): Fable drives the phase 3 reference on this branch (Superwhisper S1-mini
+GGUF cleanup AFTER STT; raw and cleaned stored separately, raw never overwritten);
+Yitan owns remaining phase-2 surfaces (NovaCore app client; Twilio SIP held until
+Chris authorizes charged calls). Review note logged for later surfaces: the LiveKit
+data-channel text bridge accepts typed input from any room participant — fine while
+rooms are private-token-only, revisit before SIP participants join.

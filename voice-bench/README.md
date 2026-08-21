@@ -53,7 +53,10 @@ license note in INSTALL_MANIFEST), `KOKORO_VOICE` (default `af_heart`).
       TTS, Silero VAD, VAD-on-real-speech, pipeline graph all PASS; Moonshine
       download and Ollama check SKIP there (network policy / no Ollama) and
       complete on Gammy.
-- [ ] Phase 1 gate: live mic↔speaker exchange on Gammy → `GATE1_PASSED.md`
+- [x] GATE 1 PASSED (2026-08-21 20:24Z, on Yitan's branch vp2/phase1-gammy,
+      commit 570de48): Chris spoke from his phone through self-hosted LiveKit,
+      the sovereign loop answered, both turns captured to the hot layer and
+      independently verified. See GATE1_PASSED.md on that branch.
 - [x] Phase 2 reference on this branch (2026-08-21): `src/bot_livekit.py` +
       self-hosted server config in `livekit/` + `scripts/livekit_token.py`.
       Gate 1 (redefined): two-way spoken exchange with Chris from his own
