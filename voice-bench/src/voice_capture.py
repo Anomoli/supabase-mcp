@@ -12,6 +12,7 @@ import json
 import os
 import uuid
 from dataclasses import dataclass, field
+from collections.abc import Awaitable, Callable
 from urllib import error, request
 
 from loguru import logger
@@ -48,9 +49,14 @@ class VoiceTurnWriter:
         clean = text.strip()
         if not clean:
             return
-        if self._pending_user is not None:
-            raise RuntimeError("Capture invariant failed: prior user turn has no assistant pair")
-        self._pending_user = clean
+        # Moonshine can emit several finalized transcription frames while
+        # Pipecat's smart-turn analyzer is still assembling one spoken turn.
+        # Preserve every segment and pair their combined text with the one
+        # assistant response instead of treating later segments as orphans.
+        if self._pending_user is None:
+            self._pending_user = clean
+        else:
+            self._pending_user = f"{self._pending_user} {clean}"
 
     async def record_assistant(self, text: str) -> None:
         clean = text.strip()
@@ -105,9 +111,14 @@ class UserTurnCapture(FrameProcessor):
 
 
 class AssistantTurnCapture(FrameProcessor):
-    def __init__(self, writer: VoiceTurnWriter):
+    def __init__(
+        self,
+        writer: VoiceTurnWriter,
+        send_text: Callable[[str], Awaitable[None]] | None = None,
+    ):
         super().__init__()
         self._writer = writer
+        self._send_text = send_text
         self._chunks: list[str] = []
         self._collecting = False
 
@@ -120,6 +131,9 @@ class AssistantTurnCapture(FrameProcessor):
             self._chunks.append(frame.text)
         elif isinstance(frame, LLMFullResponseEndFrame) and self._collecting:
             self._collecting = False
-            await self._writer.record_assistant("".join(self._chunks))
+            response = "".join(self._chunks).strip()
+            await self._writer.record_assistant(response)
+            if response and self._send_text:
+                await self._send_text(response)
             self._chunks = []
         await self.push_frame(frame, direction)

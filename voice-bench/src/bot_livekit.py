@@ -18,6 +18,7 @@ Env:  LIVEKIT_URL        default ws://localhost:7880   (bot runs next to the ser
 Mint a token for a phone/browser client with scripts/livekit_token.py.
 """
 
+import json
 import os
 from pathlib import Path
 
@@ -31,9 +32,11 @@ import asyncio
 from livekit import api
 from loguru import logger
 from pipecat.audio.vad.silero import SileroVADAnalyzer
+from pipecat.frames.frames import TranscriptionFrame
 from pipecat.pipeline.pipeline import Pipeline
 from pipecat.pipeline.runner import PipelineRunner
 from pipecat.pipeline.worker import PipelineParams, PipelineWorker
+from pipecat.processors.audio.vad_processor import VADProcessor
 from pipecat.processors.aggregators.llm_context import LLMContext
 from pipecat.processors.aggregators.llm_response_universal import LLMContextAggregatorPair
 from pipecat.services.kokoro.tts import KokoroTTSService
@@ -41,6 +44,7 @@ from pipecat.services.moonshine.stt import MoonshineSTTService
 from pipecat.services.ollama.llm import OLLamaLLMService
 from pipecat.transcriptions.language import Language
 from pipecat.transports.livekit.transport import LiveKitParams, LiveKitTransport
+from pipecat.utils.time import time_now_iso8601
 
 from voice_capture import AssistantTurnCapture, UserTurnCapture, VoiceTurnWriter
 
@@ -59,6 +63,25 @@ SYSTEM_PROMPT = (
     "aloud over a call, so keep them to one or two short sentences, with no "
     "markdown, lists, or special characters."
 )
+
+
+def text_from_livekit_data(data: bytes) -> str:
+    """Extract human text from raw or JSON LiveKit data packets."""
+    decoded = data.decode("utf-8", errors="replace").strip()
+    if not decoded:
+        return ""
+    try:
+        payload = json.loads(decoded)
+    except json.JSONDecodeError:
+        return decoded
+    if isinstance(payload, str):
+        return payload.strip()
+    if isinstance(payload, dict):
+        for key in ("message", "text", "content"):
+            value = payload.get(key)
+            if isinstance(value, str) and value.strip():
+                return value.strip()
+    return ""
 
 
 def bot_token() -> str:
@@ -80,9 +103,12 @@ async def main():
         params=LiveKitParams(
             audio_in_enabled=True,
             audio_out_enabled=True,
-            vad_analyzer=SileroVADAnalyzer(),
         ),
     )
+
+    # Pipecat 1.7 removed vad_analyzer from TransportParams. Passing it to
+    # LiveKitParams is silently ignored, so VAD must be an explicit processor.
+    vad = VADProcessor(vad_analyzer=SileroVADAnalyzer())
 
     stt = MoonshineSTTService(
         settings=MoonshineSTTService.Settings(model=MOONSHINE_MODEL, language=Language.EN)
@@ -104,11 +130,12 @@ async def main():
     pipeline = Pipeline(
         [
             transport.input(),
+            vad,
             stt,
             UserTurnCapture(capture),
             aggregators.user(),
             llm,
-            AssistantTurnCapture(capture),
+            AssistantTurnCapture(capture, send_text=transport.send_message),
             tts,
             transport.output(),
             aggregators.assistant(),
@@ -132,6 +159,23 @@ async def main():
     @transport.event_handler("on_first_participant_joined")
     async def on_first_participant_joined(transport, participant_id):
         logger.info(f"Participant joined: {participant_id} — ready for captured exchange")
+
+    @transport.event_handler("on_data_received")
+    async def on_data_received(transport, data: bytes, participant_id: str):
+        text = text_from_livekit_data(data)
+        if not text:
+            logger.warning(f"Ignored non-text LiveKit data from {participant_id}")
+            return
+        logger.info(f"Accepted LiveKit text turn from {participant_id}")
+        await worker.queue_frame(
+            TranscriptionFrame(
+                text=text,
+                user_id=participant_id,
+                timestamp=time_now_iso8601(),
+                language=Language.EN,
+                finalized=True,
+            )
+        )
 
     logger.info(f"LiveKit: room '{LIVEKIT_ROOM}' @ {LIVEKIT_URL}")
     logger.info(f"LLM: {OLLAMA_MODEL} @ {OLLAMA_BASE_URL}")

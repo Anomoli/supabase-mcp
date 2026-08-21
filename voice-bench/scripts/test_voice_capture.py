@@ -38,15 +38,16 @@ def main() -> None:
     else:
         raise AssertionError("orphan assistant turn was not rejected")
 
-    writer.record_user("first")
-    try:
-        writer.record_user("second")
-    except RuntimeError as exc:
-        assert "prior user turn" in str(exc)
-    else:
-        raise AssertionError("unpaired user overwrite was not rejected")
+    writer.record_user("first segment")
+    writer.record_user("second segment")
+    asyncio.run(writer.record_assistant("combined reply"))
+    assert sent[-1] == {
+        "p_call_id": "vp2-test-call",
+        "p_user_message": "first segment second segment",
+        "p_assistant_response": "combined reply",
+    }
 
-    print("PASS voice capture: paired RPC payload + fail-closed invariants")
+    print("PASS voice capture: paired RPC payload + segmented user turn + orphan fail-closed")
 
 
 if __name__ == "__main__":
