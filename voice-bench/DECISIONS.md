@@ -123,3 +123,29 @@ the room (35bcdc00): HIS repo is the phase-1 repo of record — it is on the har
 further along the gate; this branch stays as reviewed reference to cherry-pick from.
 Navigator asks pending with Yitan: push his branch somewhere reviewable, and record the
 repo-of-record call + on-Gammy path in his DECISIONS.md.
+
+## D-008 · 2026-08-21 · Gate 1 redefined by Chris; LiveKit path promoted — Fable drives reference again
+
+**Context.** At 17:30:59Z (agent_chat 715f578f) Chris, via voice relay, redefined Gate 1:
+a real two-way spoken exchange with CHRIS from one of HIS surfaces (phone/NovaCore app
+first, Twilio SIP later, desk press-to-talk as fallback) — not a human at Gammy's desk
+mic. Desk-mic debugging is demoted to sanity check; self-hosted LiveKit (originally
+phase 2) is now the priority path. At 17:55:59Z Rook flagged HANDOFF_OVERDUE: no Yitan
+progress since the redefinition. Per the pair protocol, Fable drives reference work again.
+
+**Call.** Built on this branch, verified as far as this container allows:
+- `src/bot_livekit.py` — same sovereign pipeline over `LiveKitTransport`; bot mints its
+  own room token; greets on first participant join. Imports verified; JWT minting
+  verified. Needs a live LiveKit server + Ollama to run, i.e. Gammy.
+- `livekit/docker-compose.yml` + `livekit/livekit.yaml` — self-hosted LiveKit v1.9
+  (Apache-2.0) for Docker Desktop on Gammy; LAN-only defaults (no cloud STUN/TURN),
+  dev key with a change-me 34-byte secret.
+- `scripts/livekit_token.py` — mints client tokens for Chris's surfaces; prints a
+  LiveKit Meet URL for a quick phone-browser test (client UI only; media stays LAN).
+
+**Recorded conflict, deliberately NOT implemented here.** The redefinition also orders
+every turn captured "through watchtower into the hot layer" — but the original written
+work order says "do NOT wire anything to the DB in this phase," and watchtower/hot-layer
+is Gammy-side NovaCore infra this container knows nothing about. Both positions stand in
+the log per protocol; the capture wiring belongs to the driver on Gammy under Chris's
+confirmation of which instruction now controls. Nothing in this branch touches any DB.

@@ -54,5 +54,8 @@ license note in INSTALL_MANIFEST), `KOKORO_VOICE` (default `af_heart`).
       download and Ollama check SKIP there (network policy / no Ollama) and
       complete on Gammy.
 - [ ] Phase 1 gate: live mic↔speaker exchange on Gammy → `GATE1_PASSED.md`
-- [ ] Phase 2: self-hosted LiveKit transport
+- [x] Phase 2 reference on this branch (2026-08-21): `src/bot_livekit.py` +
+      self-hosted server config in `livekit/` + `scripts/livekit_token.py`.
+      Gate 1 (redefined): two-way spoken exchange with Chris from his own
+      surface (phone first) through the LiveKit room — pending on Gammy
 - [ ] Phase 3: Superwhisper S1-mini transcript cleanup (raw kept separately)

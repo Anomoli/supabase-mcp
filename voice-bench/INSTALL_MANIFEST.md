@@ -48,3 +48,20 @@ data used by moonshine-voice text handling); bot.py and the smoke test pin it
 into `models/nltk_data` via the NLTK_DATA env var so it stays in the repo.
 
 No cloud API keys anywhere; the only network use is one-time model downloads.
+
+## 2026-08-21T18:05Z — phase 2 additions (same build session)
+
+### Python packages (pip, in .venv)
+| package | version | why |
+|---|---|---|
+| pipecat-ai[livekit] extra: livekit | 1.1.14 | LiveKit RTC client SDK (transport) |
+| livekit-api | 1.2.0 | token minting for bot + client surfaces |
+| livekit-protocol | 1.1.24 | transitive dep of the two above |
+
+### Server (Docker image, runs on Gammy under Docker Desktop)
+| image | version | size | why | license |
+|---|---|---|---|---|
+| livekit/livekit-server | v1.9 | ~60 MB pulled | self-hosted LiveKit for phase 2 rooms | Apache-2.0 |
+
+Still no cloud services and no API keys: the LiveKit server is self-hosted, tokens are
+signed locally with the shared dev secret in livekit/livekit.yaml (change it).
