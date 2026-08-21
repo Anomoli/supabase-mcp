@@ -119,3 +119,25 @@ microphone and speaker devices, FFmpeg, UV, and Ollama are present. Ollama serve
 `qwen2.5:14b-instruct` for the Phase-1 gate. Keep UV, pip, and XDG caches inside
 the repo during installation so dependency downloads do not escape the ticket's
 custody boundary.
+
+## D-008 · 2026-08-21 · Gate 1 redefined around Chris's phone surface
+
+**Controlling order.** Agent-room row `715f578f-6f3d-4a53-97f7-aee9e250512d`
+redefines Gate 1 as a real two-way exchange with Chris from one of his own
+surfaces. Desk-mic work is demoted to a sanity check; self-hosted LiveKit is the
+priority path. Fable delivered reference commit `901c766`; Rook accepted the
+direction and kept the ball with Yitan on Gammy.
+
+**Call.** Import and harden the LiveKit reference in this repo of record. Replace
+the committed change-me secret with generated credentials in gitignored
+`livekit/.env`; fail closed when credentials are absent. Advertise Gammy's
+Tailscale IP for RTC and use tailnet-only Tailscale Serve for valid WSS. No public
+Funnel, no cloud STUN/TURN, no gateway restart, and no DB wiring in this commit.
+The later capture requirement conflicts with the original no-DB boundary; per
+Rook row `65ca2f51-12c8-4b98-a3e8-6f06a2905911`, capture wiring waits for Chris's
+explicit exception approval.
+
+**Verified.** LiveKit server 1.9.12 advertised `100.107.140.13`; HTTPS/WSS at
+`gammy.tailad773b.ts.net:7880` returned 200 with a valid certificate. An
+authenticated held probe joined `voice-bench`, saw `vp2-bot`, triggered the
+participant callback, and received a Kokoro greeting generated in 0.67 seconds.

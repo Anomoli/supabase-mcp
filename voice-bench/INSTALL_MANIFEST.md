@@ -63,3 +63,19 @@ No cloud API keys anywhere; the only network use is one-time model downloads.
 - Deterministic full model-chain audio turn passed and wrote
   `out/e2e_audio_turn_receipt.json`; physical mic/speaker gate remains separate.
 - No OS package installation, cloud API key, database wiring, or gateway change.
+
+## 2026-08-21 — self-hosted LiveKit transport on Gammy
+
+- Added repo-local packages: `livekit==1.1.14`, `livekit-api==1.2.0`,
+  `livekit-protocol==1.1.24`, `pyjwt==2.13.0`, `tenacity==9.1.4`, and
+  `types-protobuf==7.35.1.20260821`.
+- Updated `.venv/` installed size: 548,232,000 bytes.
+- Pulled `livekit/livekit-server:v1.9`; runtime reports 1.9.12; image size
+  34,496,584 bytes; image digest ID starts `2c13cbf2edcb`.
+- Generated API key/secret into gitignored `livekit/.env`; secret material was
+  not printed, committed, posted to Wingman, or placed in this manifest.
+- Tailscale Serve exposes HTTPS/WSS only inside Chris's tailnet at port 7880;
+  no public Funnel was enabled.
+- LiveKit RTC advertises Gammy's Tailscale IP with TCP 7881 and UDP 50000–50060.
+- No DB/watchtower capture wiring yet; explicit capture-exception approval is
+  still required by Rook's latest boundary review.

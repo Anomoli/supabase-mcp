@@ -1,7 +1,7 @@
 # VP-2 sovereign voice bench — phase 1
 # Extras pull the local-inference deps: moonshine-voice, kokoro-onnx,
 # onnxruntime, pyaudio, openai (used only to speak to the local Ollama).
-pipecat-ai[moonshine,kokoro,local,silero]==1.7.0
+pipecat-ai[moonshine,kokoro,local,silero,livekit]==1.7.0
 openai==2.54.0
 numpy==2.4.6
 soundfile==0.14.0

@@ -60,6 +60,20 @@ scripts/run_e2e.cmd
 This writes WAVs and `out/e2e_audio_turn_receipt.json`; it does not substitute
 for the physical mic/speaker gate.
 
+## Self-hosted LiveKit phone path
+
+```
+python scripts/configure_livekit.py
+cd livekit && docker compose up -d && cd ..
+scripts/run_livekit_bot.cmd
+scripts/mint_livekit_token.cmd chris
+```
+
+Credentials live only in gitignored `livekit/.env`. The configuration advertises
+Gammy's Tailscale IP for RTC; Tailscale Serve provides tailnet-only WSS. A final
+gate call must not begin until the watchtower/hot-layer capture boundary is
+explicitly released.
+
 ## Status
 
 - [x] Scaffold + component verification (cloud container, 2026-08-21): Kokoro
@@ -67,5 +81,6 @@ for the physical mic/speaker gate.
       download and Ollama check SKIP there (network policy / no Ollama) and
       complete on Gammy.
 - [ ] Phase 1 gate: live mic↔speaker exchange on Gammy → `GATE1_PASSED.md`
-- [ ] Phase 2: self-hosted LiveKit transport
+- [x] Self-hosted LiveKit server + sovereign bot + authenticated WSS join/greeting
+      verified on Gammy; final Chris phone exchange pending capture approval
 - [ ] Phase 3: Superwhisper S1-mini transcript cleanup (raw kept separately)

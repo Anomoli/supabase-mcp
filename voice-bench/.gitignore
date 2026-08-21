@@ -2,6 +2,7 @@
 .uv-cache/
 .pip-cache/
 .cache/
+livekit/.env
 models/
 out/
 __pycache__/

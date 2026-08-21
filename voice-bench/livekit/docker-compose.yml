@@ -1,0 +1,17 @@
+# Self-hosted LiveKit for VP-2 phase 2. On Gammy (Windows): Docker Desktop,
+# then from voice-bench/livekit/:  docker compose up -d
+# The bot (src/bot_livekit.py) runs natively on the host and connects to
+# ws://localhost:7880; phone clients on the LAN use ws://<gammy-lan-ip>:7880.
+services:
+  livekit:
+    image: livekit/livekit-server:v1.9
+    command: --config /etc/livekit.yaml --node-ip ${LIVEKIT_NODE_IP}
+    restart: unless-stopped
+    environment:
+      LIVEKIT_KEYS: "${LIVEKIT_API_KEY}: ${LIVEKIT_API_SECRET}"
+    ports:
+      - "7880:7880"       # websocket/API
+      - "7881:7881"       # RTC over TCP (fallback)
+      - "50000-50060:50000-50060/udp"   # RTC media
+    volumes:
+      - ./livekit.yaml:/etc/livekit.yaml:ro
