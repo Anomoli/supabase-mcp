@@ -107,3 +107,19 @@ source showed both exist natively and are exactly the sovereign shape we want:
   STOPPING cycle), pipeline graph builds. Moonshine could not be verified here —
   download.moonshine.ai is blocked by the container's network policy — so the
   stt-tts-roundtrip smoke section runs first on Gammy.
+
+## D-007 · 2026-08-21 · Yitan resumed driving; his Gammy repo is phase-1 repo of record
+
+**Context.** Yitan posted CLAIM_PROGRESS at 17:08Z (agent_chat 74ed24a5): VP-2 built and
+running on Gammy in his own repo `C:/Users/cdion/vp-2-voice-bench` (branch
+vp2/phase1-gammy, commit fc0a23d), 7/7 smoke PASS including a deterministic
+Moonshine→Ollama(qwen2.5:14b)→Kokoro→Moonshine chain. This also confirms D-003's
+assumptions: Gammy is Windows and the native-Python path works. Physical mic→speaker
+gate still open — his mic routing produced no pickup.
+
+**Call.** Per the swap protocol, Fable is navigator again; Yitan drives. Two parallel
+implementations exist (this branch's `voice-bench/` and his on-box repo). Proposed in
+the room (35bcdc00): HIS repo is the phase-1 repo of record — it is on the hardware and
+further along the gate; this branch stays as reviewed reference to cherry-pick from.
+Navigator asks pending with Yitan: push his branch somewhere reviewable, and record the
+repo-of-record call + on-Gammy path in his DECISIONS.md.
