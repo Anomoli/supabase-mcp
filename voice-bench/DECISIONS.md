@@ -86,4 +86,24 @@ cached in `voice-bench/models/` — no keys, no cloud calls at runtime.
 `OLLAMA_MODEL` (default `llama3.1:8b` — swap for whatever Gammy actually serves, check
 with `ollama list`). No API keys anywhere; Pipecat's OLLamaLLMService uses the
 OpenAI-compatible surface of the local endpoint with a dummy key internally. The
-component smoke test does NOT require Ollama (it mocks the LLM); the full loop does.
+component smoke test SKIPs its Ollama section when the endpoint is down; the full
+loop requires it.
+
+## D-006 · 2026-08-21 · REVISES D-004: use pipecat 1.7's native local services
+
+**Context.** D-004 assumed pipecat had no local Moonshine/Kokoro and planned custom
+wrappers over transformers+torch (~7 GB of deps). Reading the installed pipecat 1.7.0
+source showed both exist natively and are exactly the sovereign shape we want:
+`MoonshineSTTService` (moonshine-voice, ONNX, CPU) and `KokoroTTSService` (kokoro-onnx).
+
+**Call.** Drop the custom services and torch entirely; use pipecat's own. Consequences:
+- venv shrinks from ~8 GB to ~1 GB; zero custom inference code to maintain.
+- Models stay repo-local: Kokoro via explicit `model_path`/`voices_path` args,
+  Moonshine via the `MOONSHINE_VOICE_CACHE` env var, NLTK data via `NLTK_DATA`.
+- License check: English Moonshine models use the standard license; non-English ones
+  are non-commercial Community License. Bot pins `language=EN`; stay on English models.
+- Verified on this container 2026-08-21T16:37Z: Kokoro synthesized real speech
+  (out/kokoro_smoke.wav), Silero detected it as speech (full QUIET→STARTING→SPEAKING→
+  STOPPING cycle), pipeline graph builds. Moonshine could not be verified here —
+  download.moonshine.ai is blocked by the container's network policy — so the
+  stt-tts-roundtrip smoke section runs first on Gammy.
