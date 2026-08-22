@@ -92,6 +92,17 @@ secret custody, and preservation of the running browser-demo container. It does
 activation. A reviewed public SIP/RTP route, governed Twilio trunk custody, and
 an approved narrow relight window remain hard gates.
 
+Twilio API custody is staged separately at
+`%USERPROFILE%\.novacore\secrets\vp2-twilio.env` using exactly
+`TWILIO_ACCOUNT_SID`, `TWILIO_API_KEY`, and `TWILIO_API_SECRET`. These names are
+for the forthcoming trunk-management consumer; `docker-compose.sip.yml`
+currently consumes zero Twilio variables. Plant values only through the local
+hidden-input helper. Verify names without revealing values with:
+
+```
+.venv\Scripts\python.exe scripts\plant_twilio_acorn.py --check
+```
+
 ## Status
 
 - [x] Scaffold + component verification (cloud container, 2026-08-21): Kokoro
