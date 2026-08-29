@@ -61,4 +61,9 @@ license note in INSTALL_MANIFEST), `KOKORO_VOICE` (default `af_heart`).
       self-hosted server config in `livekit/` + `scripts/livekit_token.py`.
       Gate 1 (redefined): two-way spoken exchange with Chris from his own
       surface (phone first) through the LiveKit room — pending on Gammy
-- [ ] Phase 3: Superwhisper S1-mini transcript cleanup (raw kept separately)
+- [x] Phase 3 reference (2026-08-29): entity-aware transcript lens —
+      `src/transcript_lens.py` + `src/lexicon.py` (lexicon from the newest
+      blueprint_revs row; unknown phrases kept verbatim and flagged, never
+      coined). Model: superwhisper/s1-mini-GGUF `s1-mini-q4_k_m.gguf` (484 MB,
+      downloads on Gammy). Lens rows are additive/versioned via
+      `sql/voice_transcript_lens.sql` — DDL applies only after Rook ack.

@@ -1,0 +1,16 @@
+{
+  "label": "lexicon · 2026-08-29 15:52 UTC",
+  "sources": {
+    "blueprint_revs_row": "f4507de6-02b2-4538-958d-4550458da653",
+    "blueprint_rev_label": "NC-V1-001 · 2026-08-28 10:40 EDT",
+    "static_vocab": "inline below"
+  },
+  "entities": {
+    "node_titles": ["Action Table", "Agent Seats", "Anticipator — Prework Against the Chris Model", "Break-Glass & Stewardship Charter", "Builders: Makers & Fillers", "CGP Reader", "Change-Path Stewards", "Cockpit / Atlas", "Context-Awareness Agent", "Council of Elders", "Day Buckets & Bands", "Desktop Cockpit", "Doc Index (your own Google)", "Domains / Fate Map", "Entity Roster", "Gatehouse", "Hemispheres", "ID Scheme", "Inbox Watcher (NetherChest folder)", "Ingest Agent (mini-CGP)", "Machine Fleet / Watchtowers", "Mobile Cockpit", "Nether Chest (doc marbles)", "Nether Vault (per-domain organ)", "Nightly Foreman / Digest", "Notepad / Thought Space", "novacore_write()", "Per-Loop Inspectors", "Quartermaster — System Self-Context", "Registry", "Rings Table", "RLS Walls", "Rulings This Drawing Needs", "Runners (the Harness)", "Tasker / Phone Sensory Organ", "Text Channel / Cockpit-In", "The Drawing Stacks", "The Golden Loop", "The Linker", "The Stamp / Dye", "The Tape (raw_log / marbles)", "The Watch (Chambers A·B·C)", "Two Clocks", "Voice Loop", "Wingman + Chris Nova Memory"],
+    "node_ids": ["action", "anticip", "breakglass", "buckets", "builders", "cgp", "ch_agents", "chest", "ch_gate", "ch_text", "ch_voice", "clocks", "cockpit_desktop", "cockpit_mobile", "ctxaware", "docindex", "domains", "door", "elders", "entities", "fleet", "foreman", "glass", "goldloop", "hemi", "ids", "inbox", "ingest", "inspectors", "linker", "notepad", "openq", "quarries", "quarter", "registry", "revstack", "rings", "rls", "runners", "stamp", "steward", "tape", "tasker", "vaultm", "watch"],
+    "ticket_ids": ["BN-1", "BN-2", "BN-3", "BN-4", "GL-1", "NV-1", "NV-2", "NV-3", "QM-1", "TK-1", "TK-2", "TS-1", "TS-2", "VP-1", "VP-2", "VP-3", "VP-4", "VP-5", "VP-6", "VP-7", "VP-8", "WM-1"],
+    "seats": ["Chris", "Yitan", "Rook", "Fable", "gammy-codex", "norbert-codex", "Euler", "watchtower"],
+    "machines": ["Gammy", "Norbert", "Wingman", "NovaCore"],
+    "stack": ["Pipecat", "Moonshine", "Kokoro", "Silero", "LiveKit", "Ollama", "Twilio", "Superwhisper", "S1-mini", "qwen", "Supabase", "hot layer", "voice_log_turn", "agent_chat", "blueprint_revs", "OpenClaw", "Codex", "Telegram", "Tailscale", "A2P", "SIP", "Nether Vault", "Nether Chest", "watchtower"]
+  }
+}

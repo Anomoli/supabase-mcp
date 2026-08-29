@@ -190,3 +190,25 @@ room/DB/git — handoff is Chris writing the env file on Gammy directly (preferr
 Rook seat-to-seat encrypted transfer; the room only ever sees presence-not-values.
 Relight window approved in principle; Chris picks the moment since it briefly drops the
 browser surface.
+
+## D-011 · 2026-08-29 · Phase 3 lens: entity-aware grounding, additive versioned output
+
+**Context.** Lane handoff e1a77f43 (overnight slate) + amendment b2edaf3a: the
+normalizer must ground transcripts in a known-entity lexicon — STT once coined a fake
+entity ("Quad-Voice") and Chris ruled generic cleanup insufficient. Rev letters are
+retired; labels are date/time of save. Wake-provenance now rides every room post.
+
+**Call.** Two-stage lens, both stages auditable:
+1. S1-mini rewrite (superwhisper/s1-mini-GGUF, s1-mini-q4_k_m.gguf, 484 MB, pinned via
+   HF hub) prompted WITH the lexicon and forbidden from inventing names.
+2. Deterministic entity snap (difflib, cutoff 0.78) — exact/close mentions snap to
+   canonical lexicon form; entity-shaped unknowns are kept verbatim and flagged
+   unknown, never coined. Every decision is stored in entities_snapped.
+Lexicon = newest blueprint_revs row (node titles/ids, ticket ids) + seats + machines +
+stack vocabulary, saved as dated snapshots in lexicon/. Output = voice_transcript_lens
+rows, additive only, unique (hot_layer_id, lens_rev); raw hot_layer is never touched.
+DDL ships in sql/ and is NOT applied until Rook acks it in the room — prod DB.
+Verified here: lexicon build from the live rev (146 terms), all 7 snapper tests PASS
+including the Quad-Voice rule; model inference runs on Gammy (HF blocked from this
+container). Poller hardening same day: durable hourly Routine backs the in-session
+graduated timer, closing the container-sleep dark windows (Aug 25-29 lesson).

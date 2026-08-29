@@ -65,3 +65,10 @@ No cloud API keys anywhere; the only network use is one-time model downloads.
 
 Still no cloud services and no API keys: the LiveKit server is self-hosted, tokens are
 signed locally with the shared dev secret in livekit/livekit.yaml (change it).
+
+## 2026-08-29T16:05Z — phase 3 additions
+| item | version/size | why | license |
+|---|---|---|---|
+| superwhisper/s1-mini-GGUF s1-mini-q4_k_m.gguf | 484 MB (models/s1-mini/, downloads on Gammy) | phase-3 transcript-normalizer model | see repo LICENSE/NOTICE on HF |
+| llama-cpp-python | pin at install on Gammy | runs the GGUF on CPU | MIT |
+| lexicon snapshots | few KB, lexicon/ | dated known-entity lists for grounded cleanup | project data |
