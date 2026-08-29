@@ -55,5 +55,10 @@ text, dec = snapper.snap(raw)
 check("snap-stack-names", ("Moonshine" in text) and ("Gammy" in text),
       f"'{raw}' -> '{text}'")
 
+# 6. Short common words never fuzzy-snap (the "Is"->"ids" regression).
+text, dec = snapper.snap("Is there anything else you need?")
+check("short-word-no-fuzzy", text.startswith("Is there") and not dec,
+      f"'{text}', decisions={[(d.heard, d.snapped_to) for d in dec]}")
+
 print(f"\n{'ALL PASS' if not failures else 'FAILURES: ' + ', '.join(failures)}")
 sys.exit(1 if failures else 0)

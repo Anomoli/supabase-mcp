@@ -76,6 +76,10 @@ class EntitySnapper:
                     decisions.append(SnapDecision(mention, canonical, 1.0, "exact"))
                     return canonical
                 return mention
+            # Fuzzy snapping only for substantial mentions: short words like
+            # sentence-initial "Is" score deceptively high against short terms.
+            if len(low) < 4:
+                return mention
             close = difflib.get_close_matches(low, self._by_lower.keys(), n=1, cutoff=SNAP_CUTOFF)
             if close:
                 canonical = self._by_lower[close[0]]
